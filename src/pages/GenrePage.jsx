@@ -55,14 +55,7 @@ export default function GenrePage() {
     <div style={styles.wrapper}>
       <div style={styles.left}>
         <h2 style={styles.title}>Word Explorer</h2>
-        <img
-          src={`https://ik.imagekit.io/dev24/sample-image.jpg`}
-          alt="genre visual"
-          style={styles.image}
-          onError={(e) => {
-            e.target.src = "https://via.placeholder.com/400x200?text=Image+Not+Found";
-          }}
-        />
+
         <p style={styles.label}>Definition:</p>
         <p>Explore the imaginative future of Earth through thrilling science fiction narratives.</p>
 
@@ -74,15 +67,24 @@ export default function GenrePage() {
       </div>
 
       <div style={styles.right}>
-        {stories.map((story) => (
-          <StoryCard
-            key={story.id}
-            story={{
-              ...story,
-              Image: `https://ik.imagekit.io/dev24/${story.Image[0] || "placeholder.jpg"}`
-            }}
-          />
-        ))}
+       {stories.slice(0, 6).map((story) => {
+  return (
+    <div key={story._id || story.id}>
+      <img
+        src={
+          story.Image?.[0]
+            ? `https://ik.imagekit.io/dev24/${story.Image[0]}`
+            : "https://via.placeholder.com/600x300?text=No+Image"
+        }
+        alt="story"
+        style={styles.image}
+      />
+      <h3 >{story.Title}</h3>
+    </div>
+  );
+})}
+
+        
       </div>
     </div>
   );

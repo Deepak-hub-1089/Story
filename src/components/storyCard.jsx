@@ -47,7 +47,7 @@ export default function StoryCard({ story }) {
   return (
     <div style={container} onClick={() => navigate(`/story/${story.id}`)}>
       <img
-        src={`https://ik.imagekit.io/dev24/${story.Image}`}
+        src={`https://ik.imagekit.io/dev24/${story.Image[0]}`}
         alt="story"
         style={imageStyle}
       />

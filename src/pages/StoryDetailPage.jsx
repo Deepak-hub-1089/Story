@@ -12,6 +12,7 @@ export default function StoryDetailPage() {
       .then((data) => setStory(data))
       .catch((err) => console.error("Error loading story:", err));
   }, [id]);
+  console.log(story);
 
   const styles = {
     wrapper: {
@@ -44,30 +45,87 @@ export default function StoryDetailPage() {
       border: "none",
       color: "white",
       cursor: "pointer"
+    },
+    paragraph: {
+      lineHeight: "1.6",
+      fontSize: "1rem"
+    },
+    sectionImg: {
+      width: "100%",
+      maxHeight: "250px",
+      objectFit: "cover",
+      borderRadius: "8px",
+      marginBottom: "10px"
     }
   };
 
-  if (!story) return <div style={{ color: "white", padding: "20px" }}>Loading...</div>;
+  if (!story) {
+    return <div style={{ color: "white", padding: "20px" }}>Loading...</div>;
+  }
 
   return (
     <div style={styles.wrapper}>
       <img
-        src={`https://ik.imagekit.io/dev24/${story.Image}`}
-        alt="story"
-        style={styles.img}
-      />
-      <h1 style={styles.heading}>{story.Title}</h1>
+  src={
+    story.Image
+      ? `https://ik.imagekit.io/dev24/${story.Image[story.Image.length - 1]}`
+      : "https://via.placeholder.com/600x300?text=No+Image"
+  }
+  alt="story"
+  style={styles.img}
+  onError={(e) => {
+    e.target.src = "https://via.placeholder.com/600x300?text=No+Image";
+  }}
+/>
+
+      <h1 style={styles.heading}>{story.Title || "Untitled Story"}</h1>
 
       <div style={styles.buttonRow}>
-        <button onClick={() => setTab("summary")} style={styles.button}>Summary</button>
-        <button onClick={() => setTab("details")} style={styles.button}>Details</button>
-        <button onClick={() => setTab("notes")} style={styles.button}>Notes</button>
+        <button onClick={() => setTab("summary")} style={styles.button}>
+          Summary
+        </button>
+        <button onClick={() => setTab("details")} style={styles.button}>
+          Details
+        </button>
+        <button onClick={() => setTab("notes")} style={styles.button}>
+          Notes
+        </button>
       </div>
 
-      <div>
-        {tab === "summary" && <p>{story.ShortDescription}</p>}
-        {tab === "details" && <p>{story.Description || "No extra details."}</p>}
-        {tab === "notes" && <p>Author: {story.Author || "Unknown"}</p>}
+      <div style={styles.paragraph}>
+        {tab === "summary" && (
+          <p>{story.ShortDescription || "No summary available."}</p>
+        )}
+
+        {tab === "details" && (
+          <div>
+            <h3>{story.Storyadvenure?.Storytitle || "No Title Available"}</h3>
+            {story.Storyadvenure?.content?.map((section, i) => (
+              <div key={i} style={{ marginBottom: "20px" }}>
+                {section.Storyimage?.map((img, j) => (
+                  <img
+                    key={j}
+                    src={`https://ik.imagekit.io/dev24/${img[0]}`}
+                    alt={`Section ${i + 1}`}
+                    style={styles.sectionImg}
+                    onError={(e) => {
+                      e.target.src = "https://via.placeholder.com/600x300?text=No+Image";
+                    }}
+                  />
+                ))}
+                {section.Paragraph?.map((para, k) => (
+                  <p key={k} style={{ marginBottom: "10px" }}>
+                    {para}
+                  </p>
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {tab === "notes" && (
+          <p>Author: {story.Author || "Unknown"}</p>
+        )}
       </div>
     </div>
   );
